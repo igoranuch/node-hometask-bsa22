@@ -12,7 +12,8 @@ router.post(
       const user = AuthService.login(req.body);
       res.data = user;
     } catch (err) {
-      res.err = err;
+      res.notFound = true;
+      res.message = err.message;
     } finally {
       next();
     }

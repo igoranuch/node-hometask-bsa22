@@ -17,7 +17,7 @@ const createUserValid = (req, res, next) => {
     }
 
     Object.keys(req.body).forEach((key) => {
-      if (!user.hasOwnPropert(key)) {
+      if (!user.hasOwnProperty(key)) {
         throw new Error("Excessive property");
       }
     });
@@ -37,6 +37,7 @@ const createUserValid = (req, res, next) => {
       throw new Error(errorMsg);
     }
   } catch (error) {
+    res.notFound = true;
     res.message = error.message;
   }
   next();
@@ -45,7 +46,51 @@ const createUserValid = (req, res, next) => {
 const updateUserValid = (req, res, next) => {
   // TODO: Implement validatior for user entity during update
   try {
-  } catch {}
+    if (req.body === {}) {
+      throw new Error("No data to update");
+    }
+    if (!!req.body?.id) {
+      throw new Error("Id must be absent");
+    }
+    const errorMsg = "Invalid value";
+
+    const phoneNumberTemplate = /\+380[0-9]{9}$/;
+    const emailTemplate = /^\w+([.-]?\w+)*@gmail.com/;
+
+    Object.keys(req.body).forEach((key) => {
+      if (!Object.keys(user).includes(key)) throw new Error("Mismatching property");
+      switch (key) {
+        case "email":
+          if (!req.body.email.match(emailTemplate)) {
+            throw new Error(errorMsg);
+          }
+          break;
+        case "phoneNumber":
+          if (!req.body.phoneNumber.match(phoneNumberTemplate)) {
+            throw new Error(errorMsg);
+          }
+          break;
+        case "password":
+          if (req.body.password.length < 3) {
+            throw new Error(errorMsg);
+          }
+          break;
+        case "firstName":
+          if (!req.body.firstName) {
+            throw new Error(errorMsg);
+          }
+          break;
+        case "lastName":
+          if (!req.body.lastName) {
+            throw new Error(errorMsg);
+          }
+          break;
+      }
+    });
+  } catch (err) {
+    res.notFound = true;
+    res.message = error.message;
+  }
   next();
 };
 

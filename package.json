@@ -4,6 +4,7 @@
   "description": "Hometask for NodeJS and express lecture",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js --ignore database.json",
     "test": "sh -c 'env REPO_URL=$0 npx mocha tests/**/*.spec.js -R JSON --exit'",
     "test-local": "./node_modules/.bin/mocha tests/**/*.spec.js --exit -R JSON",
     "start": "node index.js",
@@ -33,6 +34,7 @@
     "lodash.isempty": "^4.4.0",
     "lowdb": "^1.0.0",
     "mocha": "^7.1.1",
+    "nodemon": "^2.0.16",
     "request": "^2.88.2",
     "uuid": "^7.0.3"
   }
