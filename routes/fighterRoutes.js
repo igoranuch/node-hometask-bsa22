@@ -6,5 +6,85 @@ const { createFighterValid, updateFighterValid } = require("../middlewares/fight
 const router = Router();
 
 // TODO: Implement route controllers for fighter
+router.post(
+  "/",
+  createFighterValid,
+  (req, res, next) => {
+    if (!res?.notFound) {
+      try {
+        const fighter = FighterService.create(req.body);
+        res.data = fighter;
+      } catch (err) {
+        res.badRequest = true;
+        res.message = err.message;
+      }
+    }
+    next();
+  },
+  responseMiddleware
+);
+
+router.get(
+  "/:id",
+  (req, res, next) => {
+    try {
+      const fighterById = FighterService.getById(req.params.id);
+      res.data = fighterById;
+    } catch (err) {
+      res.badRequest = true;
+      res.message = err.message;
+    }
+    next();
+  },
+  responseMiddleware
+);
+
+router.get(
+  "/",
+  (req, res, next) => {
+    try {
+      const fighters = FighterService.getAll();
+      res.data = fighters;
+    } catch (err) {
+      res.badRequest = true;
+      res.message = err.message;
+    }
+    next();
+  },
+  responseMiddleware
+);
+
+router.put(
+  "/:id",
+  updateFighterValid,
+  (req, res, next) => {
+    try {
+      if (!res?.notFound) {
+        const fighter = FighterService.update(req.params.id, req.body);
+        res.data = fighter;
+      }
+    } catch (err) {
+      res.badRequest = true;
+      res.message = err.message;
+    }
+    next();
+  },
+  responseMiddleware
+);
+
+router.delete(
+  "/:id",
+  (req, res, next) => {
+    try {
+      const fighter = FighterService.delete(req.params.id);
+      res.data = fighter;
+    } catch (err) {
+      res.badRequest = true;
+      res.message = err.message;
+    }
+    next();
+  },
+  responseMiddleware
+);
 
 module.exports = router;

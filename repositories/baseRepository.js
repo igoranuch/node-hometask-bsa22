@@ -19,6 +19,10 @@ class BaseRepository {
     return this.dbContext.find(search).value();
   }
 
+  getFighterByName(search) {
+    return this.dbContext.find((fighter) => fighter.name.toLowerCase() === search.name.toLowerCase()).value();
+  }
+
   create(data) {
     data.id = this.generateId();
     data.createdAt = new Date();
