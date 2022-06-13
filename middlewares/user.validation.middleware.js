@@ -6,7 +6,7 @@ const createUserValid = (req, res, next) => {
   try {
     if (!Object.keys(req.body).length) throw new Error("Empty object");
 
-    if (!!req.body?.id) {
+    if (req.body.id) {
       throw new Error("Id must be absent");
     }
 
@@ -51,34 +51,32 @@ const updateUserValid = (req, res, next) => {
     console.log(req);
     if (!Object.keys(req.body).length) throw new Error("Empty object");
 
-    if (!!req.body?.id) {
+    if (req.body.id) {
       throw new Error("Id must be absent");
     }
-
-    const body = req.body;
 
     const errorMsg = "Invalid value";
 
     const phoneNumberTemplate = /\+380[0-9]{9}$/;
     const emailTemplate = /^\w+([.-]?\w+)*@gmail.com/;
 
-    Object.keys(body).forEach((key) => {
+    Object.keys(req.body).forEach((key) => {
       if (!user.hasOwnProperty(key)) {
         throw new Error("Excessive property");
       }
       switch (key) {
         case "email":
-          if (!body.email.match(emailTemplate)) {
+          if (!req.body.email.match(emailTemplate)) {
             throw new Error(errorMsg);
           }
           break;
         case "phoneNumber":
-          if (!body.phoneNumber.match(phoneNumberTemplate)) {
+          if (!req.body.phoneNumber.match(phoneNumberTemplate)) {
             throw new Error(errorMsg);
           }
           break;
         case "password":
-          if (body.password.length < 3) {
+          if (req.body.password.length < 3) {
             throw new Error(errorMsg);
           }
           break;

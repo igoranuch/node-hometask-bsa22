@@ -5,7 +5,7 @@ const createFighterValid = (req, res, next) => {
   try {
     if (!Object.keys(req.body).length) throw new Error("Empty object");
 
-    if (!!req.body?.id) {
+    if (req.body.id) {
       throw new Error("Id must be absent");
     }
 
@@ -13,17 +13,15 @@ const createFighterValid = (req, res, next) => {
 
     const { defense, power, name } = req.body;
 
-    if (!defense || !power || !name) {
-      throw new Error(errorMsg);
-    }
-
     Object.keys(req.body).forEach((key) => {
       if (!fighter.hasOwnProperty(key)) {
         throw new Error("Excessive property");
       }
     });
 
-    if (!req.body.health) req.body.health = 100;
+    if (!defense || !power || !name) {
+      throw new Error(errorMsg);
+    }
 
     if (power < 1 || power > 100 || typeof power != "number") {
       throw new Error(errorMsg);
@@ -36,6 +34,8 @@ const createFighterValid = (req, res, next) => {
     if (req.body.health < 80 || req.body.health > 120 || typeof req.body.health != "number") {
       throw new Error(errorMsg);
     }
+
+    if (!req.body.health) req.body.health = 100;
   } catch (err) {
     res.badRequest = true;
     res.message = err.message;
@@ -48,14 +48,16 @@ const updateFighterValid = (req, res, next) => {
   try {
     if (!Object.keys(req.body).length) throw new Error("Empty object");
 
-    if (!!req.body?.id) {
+    if (req.body.id) {
       throw new Error("Id must be absent");
     }
 
     const errorMsg = "Invalid value";
 
     Object.keys(req.body).forEach((key) => {
-      if (!Object.keys(fighter).includes(key)) throw new Error("Mismatching property");
+      if (!fighter.hasOwnProperty(key)) {
+        throw new Error("Excessive property");
+      }
       switch (key) {
         case "power":
           if (req.body.power < 1 || req.body.power > 100 || typeof req.body.power != "number") {

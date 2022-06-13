@@ -2,11 +2,10 @@ const { FighterRepository } = require("../repositories/fighterRepository");
 
 class FighterService {
   // TODO: Implement methods to work with fighters
-
   create(fighterParams) {
     const { name } = fighterParams;
 
-    if (!!this.getByName({ name })) {
+    if (this.getOneByName({ name })) {
       throw new Error("Fighter with such name already exists");
     }
 
@@ -19,7 +18,7 @@ class FighterService {
     return fighters;
   }
 
-  getById(id) {
+  getOneById(id) {
     const fighter = this.search({ id });
     if (!fighter) {
       throw new Error("Fighter not found");
@@ -27,7 +26,7 @@ class FighterService {
     return fighter;
   }
 
-  getByName(name) {
+  getOneByName(name) {
     const fighter = FighterRepository.getFighterByName(name);
     if (!fighter) {
       return null;
@@ -42,7 +41,7 @@ class FighterService {
       throw new Error("Fighter to update not found");
     }
 
-    if (newData?.name && !!this.getByName({ name })) {
+    if (newData.name && this.getOneByName({ name })) {
       throw new Error("Fighter name already used");
     }
 

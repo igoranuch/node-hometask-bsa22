@@ -10,7 +10,7 @@ router.post(
   "/",
   createFighterValid,
   (req, res, next) => {
-    if (!res?.badRequest) {
+    if (!res.badRequest) {
       try {
         const fighter = FighterService.create(req.body);
         res.data = fighter;
@@ -58,7 +58,7 @@ router.put(
   "/:id",
   updateFighterValid,
   (req, res, next) => {
-    if (!res?.badRequest) {
+    if (!res.badRequest) {
       try {
         const fighter = FighterService.update(req.params.id, req.body);
         res.data = fighter;

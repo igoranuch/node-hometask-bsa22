@@ -11,7 +11,7 @@ router.post(
   "/",
   createUserValid,
   (req, res, next) => {
-    if (!res?.badRequest) {
+    if (!res.badRequest) {
       try {
         const user = UserService.create(req.body);
         res.data = user;
@@ -59,7 +59,7 @@ router.put(
   "/:id",
   updateUserValid,
   (req, res, next) => {
-    if (!res?.badRequest) {
+    if (!res.badRequest) {
       try {
         const user = UserService.update(req.params.id, req.body);
         res.data = user;
