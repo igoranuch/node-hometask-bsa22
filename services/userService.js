@@ -33,10 +33,13 @@ class UserService {
     if (this.search({ phoneNumber: newData?.phoneNumber }) || this.search({ email: newData?.email })) {
       throw new Error("Such phone number or email already used");
     }
+
     const user = UserRepository.update(id, newData);
+
     if (!user) {
       throw new Error("User to update not found");
     }
+
     return user;
   }
 

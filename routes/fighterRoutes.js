@@ -10,7 +10,7 @@ router.post(
   "/",
   createFighterValid,
   (req, res, next) => {
-    if (!res?.notFound) {
+    if (!res?.badRequest) {
       try {
         const fighter = FighterService.create(req.body);
         res.data = fighter;
@@ -31,7 +31,7 @@ router.get(
       const fighterById = FighterService.getById(req.params.id);
       res.data = fighterById;
     } catch (err) {
-      res.badRequest = true;
+      res.notFound = true;
       res.message = err.message;
     }
     next();
@@ -46,7 +46,7 @@ router.get(
       const fighters = FighterService.getAll();
       res.data = fighters;
     } catch (err) {
-      res.badRequest = true;
+      res.notFound = true;
       res.message = err.message;
     }
     next();
@@ -58,14 +58,14 @@ router.put(
   "/:id",
   updateFighterValid,
   (req, res, next) => {
-    try {
-      if (!res?.notFound) {
+    if (!res?.badRequest) {
+      try {
         const fighter = FighterService.update(req.params.id, req.body);
         res.data = fighter;
+      } catch (err) {
+        res.badRequest = true;
+        res.message = err.message;
       }
-    } catch (err) {
-      res.badRequest = true;
-      res.message = err.message;
     }
     next();
   },
@@ -79,7 +79,7 @@ router.delete(
       const fighter = FighterService.delete(req.params.id);
       res.data = fighter;
     } catch (err) {
-      res.badRequest = true;
+      res.notFound = true;
       res.message = err.message;
     }
     next();

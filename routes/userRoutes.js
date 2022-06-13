@@ -11,7 +11,7 @@ router.post(
   "/",
   createUserValid,
   (req, res, next) => {
-    if (!res?.notFound) {
+    if (!res?.badRequest) {
       try {
         const user = UserService.create(req.body);
         res.data = user;
@@ -32,7 +32,7 @@ router.get(
       const userById = UserService.getById(req.params.id);
       res.data = userById;
     } catch (err) {
-      res.badRequest = true;
+      res.notFound = true;
       res.message = err.message;
     }
     next();
@@ -47,7 +47,7 @@ router.get(
       const users = UserRepository.getAll();
       res.data = users;
     } catch (err) {
-      res.badRequest = true;
+      res.notFound = true;
       res.message = err.message;
     }
     next();
@@ -59,14 +59,14 @@ router.put(
   "/:id",
   updateUserValid,
   (req, res, next) => {
-    try {
-      if (!res?.notFound) {
+    if (!res?.badRequest) {
+      try {
         const user = UserService.update(req.params.id, req.body);
         res.data = user;
+      } catch (err) {
+        res.badRequest = true;
+        res.message = err.message;
       }
-    } catch (err) {
-      res.badRequest = true;
-      res.message = err.message;
     }
     next();
   },
@@ -80,7 +80,7 @@ router.delete(
       const user = UserService.delete(req.params.id);
       res.data = user;
     } catch (err) {
-      res.badRequest = true;
+      res.notFound = true;
       res.message = err.message;
     }
     next();

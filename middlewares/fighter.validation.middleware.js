@@ -1,21 +1,21 @@
-const { fighter } = require("../models/fighter");
+const { fighter } = require("../models/fighter.js");
 
 const createFighterValid = (req, res, next) => {
   // TODO: Implement validatior for fighter entity during creation
   try {
-    const { defense, power, name } = req.body;
+    if (!Object.keys(req.body).length) throw new Error("Empty object");
 
-    const errorMsg = "Invalid value";
-
-    if (!(defense || power || name)) {
-      throw new Error(errorMsg);
-    }
-
-    if (req.body?.id) {
+    if (!!req.body?.id) {
       throw new Error("Id must be absent");
     }
 
-    if (!req.body.health) req.body.health = 100;
+    const errorMsg = "Invalid value";
+
+    const { defense, power, name } = req.body;
+
+    if (!defense || !power || !name) {
+      throw new Error(errorMsg);
+    }
 
     Object.keys(req.body).forEach((key) => {
       if (!fighter.hasOwnProperty(key)) {
@@ -23,19 +23,21 @@ const createFighterValid = (req, res, next) => {
       }
     });
 
-    if (power < 1 || power > 100) {
+    if (!req.body.health) req.body.health = 100;
+
+    if (power < 1 || power > 100 || typeof power != "number") {
       throw new Error(errorMsg);
     }
 
-    if (defense < 1 || defense > 10) {
+    if (defense < 1 || defense > 10 || typeof defense != "number") {
       throw new Error(errorMsg);
     }
 
-    if (req.body.health < 80 || req.body.health > 120) {
+    if (req.body.health < 80 || req.body.health > 120 || typeof req.body.health != "number") {
       throw new Error(errorMsg);
     }
   } catch (err) {
-    res.notFound = true;
+    res.badRequest = true;
     res.message = err.message;
   }
   next();
@@ -44,9 +46,7 @@ const createFighterValid = (req, res, next) => {
 const updateFighterValid = (req, res, next) => {
   // TODO: Implement validatior for fighter entity during update
   try {
-    if (req.body === {}) {
-      throw new Error("No data to update");
-    }
+    if (!Object.keys(req.body).length) throw new Error("Empty object");
 
     if (!!req.body?.id) {
       throw new Error("Id must be absent");
@@ -58,24 +58,24 @@ const updateFighterValid = (req, res, next) => {
       if (!Object.keys(fighter).includes(key)) throw new Error("Mismatching property");
       switch (key) {
         case "power":
-          if (req.body.power < 1 || req.body.power > 100) {
+          if (req.body.power < 1 || req.body.power > 100 || typeof req.body.power != "number") {
             throw new Error(errorMsg);
           }
           break;
         case "defense":
-          if (req.body.defense < 1 || req.body.defense > 10) {
+          if (req.body.defense < 1 || req.body.defense > 10 || typeof req.body.defense != "number") {
             throw new Error(errorMsg);
           }
           break;
         case "health":
-          if (req.body.health < 80 || req.body.health > 120) {
+          if (req.body.health < 80 || req.body.health > 120 || typeof req.body.health != "number") {
             throw new Error(errorMsg);
           }
           break;
       }
     });
   } catch (err) {
-    res.notFound = true;
+    res.badRequest = true;
     res.message = err.message;
   }
   next();

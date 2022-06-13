@@ -1,19 +1,21 @@
 const { use } = require("chai");
 const { last } = require("lodash");
-const { user } = require("../models/user");
+const { user } = require("../models/user.js");
 const createUserValid = (req, res, next) => {
   // TODO: Implement validatior for user entity during creation
   try {
-    const { firstName, lastName, email, phoneNumber, password } = req.body;
+    if (!Object.keys(req.body).length) throw new Error("Empty object");
+
+    if (!!req.body?.id) {
+      throw new Error("Id must be absent");
+    }
 
     const errorMsg = "Invalid value";
 
-    if (!(firstName || lastName || email || phoneNumber || password)) {
-      throw new Error(errorMsg);
-    }
+    const { firstName, lastName, email, phoneNumber, password } = req.body;
 
-    if (req.body?.id) {
-      throw new Error("Id must be absent");
+    if (!firstName || !lastName || !email || !phoneNumber || !password) {
+      throw new Error(errorMsg);
     }
 
     Object.keys(req.body).forEach((key) => {
@@ -37,7 +39,7 @@ const createUserValid = (req, res, next) => {
       throw new Error(errorMsg);
     }
   } catch (error) {
-    res.notFound = true;
+    res.badRequest = true;
     res.message = error.message;
   }
   next();
@@ -46,49 +48,44 @@ const createUserValid = (req, res, next) => {
 const updateUserValid = (req, res, next) => {
   // TODO: Implement validatior for user entity during update
   try {
-    if (req.body === {}) {
-      throw new Error("No data to update");
-    }
+    console.log(req);
+    if (!Object.keys(req.body).length) throw new Error("Empty object");
+
     if (!!req.body?.id) {
       throw new Error("Id must be absent");
     }
+
+    const body = req.body;
+
     const errorMsg = "Invalid value";
 
     const phoneNumberTemplate = /\+380[0-9]{9}$/;
     const emailTemplate = /^\w+([.-]?\w+)*@gmail.com/;
 
-    Object.keys(req.body).forEach((key) => {
-      if (!Object.keys(user).includes(key)) throw new Error("Mismatching property");
+    Object.keys(body).forEach((key) => {
+      if (!user.hasOwnProperty(key)) {
+        throw new Error("Excessive property");
+      }
       switch (key) {
         case "email":
-          if (!req.body.email.match(emailTemplate)) {
+          if (!body.email.match(emailTemplate)) {
             throw new Error(errorMsg);
           }
           break;
         case "phoneNumber":
-          if (!req.body.phoneNumber.match(phoneNumberTemplate)) {
+          if (!body.phoneNumber.match(phoneNumberTemplate)) {
             throw new Error(errorMsg);
           }
           break;
         case "password":
-          if (req.body.password.length < 3) {
-            throw new Error(errorMsg);
-          }
-          break;
-        case "firstName":
-          if (!req.body.firstName) {
-            throw new Error(errorMsg);
-          }
-          break;
-        case "lastName":
-          if (!req.body.lastName) {
+          if (body.password.length < 3) {
             throw new Error(errorMsg);
           }
           break;
       }
     });
-  } catch (err) {
-    res.notFound = true;
+  } catch (error) {
+    res.badRequest = true;
     res.message = error.message;
   }
   next();

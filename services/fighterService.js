@@ -41,6 +41,7 @@ class FighterService {
     if (!this.search({ id })) {
       throw new Error("Fighter to update not found");
     }
+
     if (newData?.name && !!this.getByName({ name })) {
       throw new Error("Fighter name already used");
     }
