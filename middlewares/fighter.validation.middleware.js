@@ -3,7 +3,7 @@ const { fighter } = require("../models/fighter");
 const createFighterValid = (req, res, next) => {
   // TODO: Implement validatior for fighter entity during creation
   try {
-    const { defense, power, name, health = 100 } = req.body;
+    const { defense, power, name } = req.body;
 
     const errorMsg = "Invalid value";
 
@@ -14,6 +14,8 @@ const createFighterValid = (req, res, next) => {
     if (req.body?.id) {
       throw new Error("Id must be absent");
     }
+
+    if (!req.body.health) req.body.health = 100;
 
     Object.keys(req.body).forEach((key) => {
       if (!fighter.hasOwnProperty(key)) {
@@ -29,7 +31,7 @@ const createFighterValid = (req, res, next) => {
       throw new Error(errorMsg);
     }
 
-    if (health < 80 || health > 120) {
+    if (req.body.health < 80 || req.body.health > 120) {
       throw new Error(errorMsg);
     }
   } catch (err) {

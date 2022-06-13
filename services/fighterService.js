@@ -6,7 +6,7 @@ class FighterService {
   create(fighterParams) {
     const { name } = fighterParams;
 
-    if (!!this.getByName(name)) {
+    if (!!this.getByName({ name })) {
       throw new Error("Fighter with such name already exists");
     }
 
@@ -36,12 +36,15 @@ class FighterService {
   }
 
   update(id, newData) {
+    const { name } = newData;
+
     if (!this.search({ id })) {
       throw new Error("Fighter to update not found");
     }
-    if (!!this.getByName(newData?.name)) {
-      throw new Error("Fighter with such name already exists");
+    if (newData?.name && !!this.getByName({ name })) {
+      throw new Error("Fighter name already used");
     }
+
     const fighter = FighterRepository.update(id, newData);
     if (!fighter) {
       throw new Error("Fighter to update not found");

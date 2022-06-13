@@ -7,7 +7,7 @@ class UserService {
     const { email, phoneNumber } = userParams;
 
     if (!!this.search({ email }) || !!this.search({ phoneNumber })) {
-      throw new Error("User already exists");
+      throw new Error("User with such phone number or email already exists");
     }
     const user = UserRepository.create(userParams);
     return user;
@@ -31,7 +31,7 @@ class UserService {
       throw new Error("User to update not found");
     }
     if (this.search({ phoneNumber: newData?.phoneNumber }) || this.search({ email: newData?.email })) {
-      throw new Error("User with such phone number or email already exists");
+      throw new Error("Such phone number or email already used");
     }
     const user = UserRepository.update(id, newData);
     if (!user) {
